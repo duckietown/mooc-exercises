@@ -6,10 +6,11 @@ Run
 
     dts exercises notebooks
 
-Go inside and read and work through the following notebooks:
+Go inside and read and work through the following notebooks (in sequence):
 
 - `braitenberg01`
 - `braitenberg02`
+- `braitenberg03`
 
 In those notebooks you need to fill out some functions that will create your agent. 
 
@@ -28,7 +29,7 @@ At the end, you should submit your work using
 
     dts challenges submit 
 
-
+The robot should travel at least an average of 2 meters without hitting any duckie.
 
 
 
