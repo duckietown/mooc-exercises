@@ -42,22 +42,25 @@ def save_npz(img, boxes, classes):
 
 # some setup
 seed(123)
-MAX_STEPS = 10
+MAX_STEPS = 1800
 nb_of_steps = 0
 
 # we interate over several maps to get more diverse data
 possible_maps = [
-    "loop_pedestrians",
+    #"loop_pedestrians",
     "udem1",
-    "loop_dyn_duckiebots",
+    #"loop_dyn_duckiebots",
     "zigzag_dists"
 ]
 env_id = 0
 env = None
 while True:
     if env is not None:
-        env.window.close()
-        env.close()
+        try:
+            env.window.close()
+            env.close()
+        except:
+            pass
 
     if env_id >= len(possible_maps):
         env_id = env_id % len(possible_maps)
