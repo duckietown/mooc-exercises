@@ -1,0 +1,14 @@
+protocol: protocol_planning-1
+challenge:
+- mooc-planning-empty-vali
+- mooc-planning-intermediate-vali
+- mooc-planning-intermediate-test
+- mooc-planning-constrained-vali
+- mooc-planning-constrained-test
+- mooc-planning-dynamic-test
+- mooc-planning-dynamic-vali
+user-label: "planning-exercise"
+user-payload: {}
+description: |
+  Empty planner
+
