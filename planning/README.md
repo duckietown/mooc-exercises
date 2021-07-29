@@ -29,7 +29,7 @@ For **environment complexity** we have 3 cases:
 
 After the "Planning 1" and "Planning 2" modules, you should be able to do the challenges *without the curvature constraints*.
 
-For the challenges with the curvature constraints, you need an understanding of the materials in "Planning 3".
+For the challenges with the curvature constraints, you need an understanding of the materials in "Planning 3" (not released yet).
 
 The combinations give rise to 6 challenges, summarized in the following table.
 
@@ -107,17 +107,10 @@ The data structures are defined in the `dt-protocols-daffy` package, which you c
 Note that from time to time we make changes to the code, so if there are weird errors try to update the version that you have .
 
 
-
-
 [repo]: https://github.com/duckietown/dt-protocols
 
-
-Now, go read `planner.py`, which contains the template. There are some hints to get started there. 
-
-Modify the file and test if the program runs or check its performance with local evaluations over the validation dataset. And once satisfied with the program, submit to the challenges.
  
-
-In particular, you can see in [`collision_protocol.py`][file] the data structures to use.
+You can see in [`collision_protocol.py`][file] the data structures used.
 
 [file]: https://github.com/duckietown/dt-protocols/blob/daffy/src/dt_protocols/collision_protocol.py
 
@@ -157,7 +150,7 @@ Dynamic constraints:
 
 * `min_linear_velocity_m_s` and `max_linear_velocity_m_s` give the interval of linear velocity allowed in the x direction (in m/s).
 * `max_angular_velocity_deg_s` is the maximum turning rate (in deg/s)
-* `max_curvature` is the maximum curvature allowed. Example: if `max_curvature` is 4, it means that the smallest circle that the robot can trace is 1/4 = 0.25 m.
+* `max_curvature` is the maximum curvature allowed. Example: if `max_curvature` is 4, it means that the radius of the smallest circle that the robot can trace is 1/4 = 0.25 m.
 
 Tolerances:
 
@@ -197,7 +190,7 @@ class PlanStep:
     angular_velocity_deg_s: float
 ```
 
-As an example, this is an example (contained in the planner template) that describes a plan to trace a square:
+This is an example (contained in the planner template) that construct a plan that traces a square of a given length in minimum time:
 
 
 ```python
@@ -293,16 +286,16 @@ Start with the challenges with the empty environment. You should be able to comp
 
 One easy way to do it is the following:
 
-1. Starting a pose A, turn towards pose B.
+1. Starting at pose A, turn towards pose B.
 2. Go forward until you reach B in x,y coordinates.
 3. Adjust the orientation to B's orientation.
 
-This simple algorithm will work, but it produces path with infinite curvature.
+This simple algorithm will work, but it produces path with infinite curvature, as you turn in place.
 
 You might want to implement a function of this signature:
 
 ```python
-def connect_poses(ps: PlanningSetup, a: FriendlyPose, b: FriendlyPose) -> List[PlanStep]]:
+def connect_poses(ps: PlanningSetup, a: FriendlyPose, b: FriendlyPose) -> List[PlanStep]:
     ...
 ```
 
@@ -331,12 +324,14 @@ You should use spatio-temporal nodes. Each node has coordinates `(x,y,theta,t)`.
 
 You can only connect two nodes `(...,t1)` and `(...,t2)` if `t2 > t1`.
 
-The connection function to write now has the form
+The connection function to write now should have the form
 
 ```python
-def connect_temporal_poses(ps: PlanningSetup, a: FriendlyPose, b: FriendlyPose, dt: float) -> List[PlanStep]]:
+def connect_temporal_poses(ps: PlanningSetup, a: FriendlyPose, b: FriendlyPose, dt: float) -> List[PlanStep]:
     ...
 ```
+
+because you don't want the fastest plan, but rather the plan that takes exactly `dt = t2 - t1`.
 
 ### Finally, the bounded curvature case
 
