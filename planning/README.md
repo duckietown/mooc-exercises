@@ -1,121 +1,264 @@
 
-# Write a collision checker
+# Write a path planner
 
-In this exercise, you will write a collision checker. In the next exercise you will use this collision checker as part of a planning algorithm.
+In this series of exercises, you will write path planners of increasing complexity. 
+
+You need to have solved the `collision` exercise, because you will need a collision checker. 
 
 Note: This is a code-only exercise: you don't need the Duckiebot.
 
+ 
 
-* [Instructions](#instructions)
-* [Data structures and protocol](#data-structures-and-protocol)
-* [Template](#template)
-* [Tips for implementing the collision checker](#tips-for-implementing-the-collision-checker)
-  + [Use decomposition](#use-decomposition)
-  + [Pay attention to the poses](#pay-attention-to-the-poses)
-  + [In the end, what is the core complexity?](#in-the-end--what-is-the-core-complexity-)
-  + [Speeding things up using lower/upper bound heuristics](#speeding-things-up-using-lower-upper-bound-heuristics)
-  + [Speeding things up using bitmaps heuristics](#speeding-things-up-using-bitmaps-heuristics)
+## Path planning problems 
+
+We will consider several variations of path planning problems.
+
+There are **two complexity axes**: dynamic constraints and environment complexity.
+
+
+For **dynamic constraints** we have 2 cases:
+
+1. The basic case is that of a differential drive robot, which can turn in place. 
+2. The advanced case is a car-like dynamics: the robot cannot turn in place, because there is a bound on the maximum path curvature.
+
+For **environment complexity** we have 3 cases:
+
+1. The basic case is that of an **empty** environment.
+2. The intermediate case is that of an environment with **static** obstacles.
+3. The advanced case is that of an environment with **dynamic** obstacles (with known motion).
+
+After the "Planning 1" and "Planning 2" modules, you should be able to do the challenges *without the curvature constraints*.
+
+For the challenges with the curvature constraints, you need an understanding of the materials in "Planning 3".
+
+The combinations give rise to 6 challenges, summarized in the following table.
+
+
+| challenge                                                      | dynamic constraints     | environment        | MOOC modules   |
+|----------------------------------------------------------------|-------------------------|--------------------|----------------|
+| [mooc-planning-dd-empty-vali][mooc-planning-dd-empty-vali]     | differential drive      | empty              | Planning 1,2   |
+| [mooc-planning-cc-empty-vali][mooc-planning-cc-empty-vali]     | + curvature constraints | empty              | Planning 1,2,3 |
+| [mooc-planning-dd-static-vali][mooc-planning-dd-static-vali]   | differential drive      | static obstacles   | Planning 1,2   |
+| [mooc-planning-cc-static-vali][mooc-planning-cc-static-vali]   | + curvature constraints | static obstacles   | Planning 1,2,3 |
+| [mooc-planning-dd-dynamic-vali][mooc-planning-dd-dynamic-vali] | differential drive      | dynamic obstacles  | Planning 1,2   |
+| [mooc-planning-cc-dynamic-vali][mooc-planning-cc-dynamic-vali] | + curvature constraints | dynamic obstacles  | Planning 1,2,3 |
+
+[mooc-planning-dd-empty-vali]:
+[mooc-planning-cc-empty-vali]:
+[mooc-planning-dd-static-vali]:
+[mooc-planning-cc-static-vali]:
+[mooc-planning-dd-dynamic-vali]:
+[mooc-planning-cc-dynamic-vali]:
+
+(Except for the first two, there are also corresponding `-test` challenges with hidden traces that are used for grading.)
 
 
 ## Instructions
 
-The template contained in this folder is a fully functional (wrong) solution. 
-You can try to evaluate/submit right away.
+The template contained in the `planner` subfolder is a fully functional (but wrong) solution.
+
+You can try to evaluate/submit it right away.
 
 Make sure you have an updated system using
 
-    dts desktop update
+```shell 
+dts desktop update
+```
 
-To evaluate the submission,  go in `collision_checker` and use:
+To evaluate the submission, go in `planner/` and use:
 
-    dts challenges evaluate --challenge mooc-collision-check-vali 
+```shell 
+dts challenges evaluate --challenge mooc-planning-dd-static-vali
+```
 
 To submit, use
 
-    dts challenges submit
+```shell
+dts challenges submit
+```
 
-Note that the submission will be sent to two different challenges:
+This will send it to all the challenges listed in the `submission.yaml` file (all of the above).
 
-- [`mooc-collision-check-vali`][vali] is the **validation** challenge. You will be able to see the score and other output.
-- [`mooc-collision-check-test`][test] is the **testing** challenge. You will not be able to see the scores.
+To minimize confusion, you might want to submit to one challenge at a time with the `--challenge` option.
 
-To pass, you have to get at least 95% of the queries correct on the `mooc-collision-check-test` challenge. (This allows some slack, so that you can experiment with probabilistic algorithms).
 
-Note that you cannot do
+### Passing criteria
 
-    dts challenges evaluate --challenge mooc-collision-check-test  !! does not work !!
+Note that for the Spring 2021 MOOC this is not a graded exercise.
 
-because the test challenge must remain a secret.
+To pass, you have to get at least 95% of the queries correct on the `*-test` challenges.
+(This allows some slack, so that you can experiment with probabilistic algorithms).
 
-[test]: https://challenges.duckietown.org/v4/humans/challenges/mooc-collision-check-test
-[vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-collision-check-vali
-
-Now, go read `collision_checker.py`, which contains the template. There are some hints to get started there. 
-
-Modify the file and test if the program runs or check its performance with local evaluations over the validation dataset. And once satisfied with the program, submit to the challenges.
-
+ 
 ## Data structures and protocol
 
-The data structures are defined in the `dt-protocols-daffy` package, which you can install via `pip`, or directly clone from [repo][repo].
+The data structures are defined in the `dt-protocols-daffy` package, which you can install via `pip`, or directly clone from the [repo][repo].
+Note that from time to time we make changes to the code, so if there are weird errors try to update the version that you have .
+
+
 
 
 [repo]: https://github.com/duckietown/dt-protocols
 
+
+Now, go read `planner.py`, which contains the template. There are some hints to get started there. 
+
+Modify the file and test if the program runs or check its performance with local evaluations over the validation dataset. And once satisfied with the program, submit to the challenges.
+ 
 
 In particular, you can see in [`collision_protocol.py`][file] the data structures to use.
 
 [file]: https://github.com/duckietown/dt-protocols/blob/daffy/src/dt_protocols/collision_protocol.py
 
 
-The parameters for the collision checker is a `MapDefinition`, which specifies the `environment` and `body`.
+Note: The data structures used for the planner are an extension of the data structures used in the `collision` exercise. 
+Please refer to that documentation for a description of `PlacedPrimitive`, `FriendlyPose`, `Primitive`, `Rectangle`, `Circle`, etc.
 
-Both `environment` and `body` are lists of `PlacedPrimitive`s.
 
-A `PlacedPrimitive` is a pair of a `FriendlyPose` and a `Primitive`.
+This is the protocol:
+
+1. The planner receives first a message of type `PlanningSetup`, which contains a description of the environment, the robot body, and the dynamic constraints.
+2. Then the planner receives a sequence of `PlanningQuery`s. The query contains a start and a target pose for the robot. 
+3. The planner must respond with a `PlanningResult` message containing the  plan.
+
+More in detail:
+
+The `PlanningSetup` object is an extension of the `MapDefinition` type used in the previous exercise. `MapDefinition` contains 
+a description of the environment and robot body. `PlanningSetup` extends it with the planning constraints.
+
+```python
+@dataclass
+class PlanningSetup(MapDefinition):
+    bounds: Rectangle
+    max_linear_velocity_m_s: float
+    min_linear_velocity_m_s: float
+    max_angular_velocity_deg_s: float
+    max_curvature: float
+    tolerance_xy_m: float
+    tolerance_theta_deg: float
+```
+
+Environment:
+
+* `bounds` is a `Rectangle` that gives the overall area where the robot is allowed.
+
+Dynamic constraints:
+
+* `min_linear_velocity_m_s` and `max_linear_velocity_m_s` give the interval of linear velocity allowed in the x direction (in m/s).
+* `max_angular_velocity_deg_s` is the maximum turning rate (in deg/s)
+* `max_curvature` is the maximum curvature allowed. Example: if `max_curvature` is 4, it means that the smallest circle that the robot can trace is 1/4 = 0.25 m.
+
+Tolerances:
+
+* `tolerance_xy_m` is the maximum tolerance for errors in the final pose for x-y.
+* `tolerance_theta_deg` is the maximum tolerance for errors in the final pose for the orientation.
+
+The `PlanningQuery` message contains the start and target pose:
+
+```python
+@dataclass
+class PlanningQuery:
+    start: FriendlyPose
+    target: FriendlyPose
+```
+
+The `PlanningResult` message is:
+
+```python
+@dataclass
+class PlanningResult:
+    feasible: bool
+    plan: Optional[List[PlanStep]]
+```
+
+In your response, you should first declare if you found a feasible solution with the first boolean.
+(Note that in the scoring we penalize if you declared that you found a feasible solution when you don't have it more that if you just declare it infeasible).
+
+In case of a feasible answer, you should return the plan, which is a list of `PlanStep`s.
+
+A `PlanStep` contains the duration of the step as well as angular and linear velocity held constant during the step:
+
+```python
+@dataclass
+class PlanStep:
+    duration: float
+    velocity_x_m_s: float
+    angular_velocity_deg_s: float
+```
+
+As an example, this is an example (contained in the planner template) that describes a plan to trace a square:
+
+
+```python
+# Let's trace a square of side L at maximum velocity.
+L = 1.0
+duration_straight_m_s = L / self.params.max_linear_velocity_m_s
+duration_turn_deg_s = 90.0 / self.params.max_angular_velocity_deg_s
+
+# The plan will be: straight, turn, straight, turn, straight, turn, straight, turn
+
+straight = PlanStep(duration=duration_straight_m_s, angular_velocity_deg_s=0.0,
+                    velocity_x_m_s=self.params.max_linear_velocity_m_s)
+turn = PlanStep(duration=duration_turn_deg_s,
+                angular_velocity_deg_s=self.params.max_angular_velocity_deg_s,
+                velocity_x_m_s=0.0)
+
+plan = [straight, turn] * 4
+
+```
+
+### Extension: moving obstacles
+
+The new thing that is introduced in these exercises is that now a `PlacedPrimitive` can have an optional `Motion` object associated, which, if not equal to `None`, specifies its path in time.
 
 ```python
 @dataclass
 class PlacedPrimitive:
     pose: FriendlyPose
     primitive: Primitive
-    
-    
-@dataclass
-class FriendlyPose:
-    x: float
-    y: float
-    theta_deg: float
+    motion: Optional[Motion]  # new!
 ```
 
 
-A `Primitive` is either a `Rectangle` or a `Circle`.
+The motion is described as a sequence of `PlanStep`:
+
+```python
+@dataclass
+class Motion:
+    steps: List[PlanStep]
+```
+
+(Note here that we are doing motion planning in dynamic environments with *known* motion. 
+Studying reactive cases in which agents react to )
+
+
+In the `dt_protocols` module you will find a useful function `simulate` which you can use to predict the trajectories for the obstacles (and for yourself as well):
 
 ```python
 
 @dataclass
-class Circle:
-    radius: float
+class SimulationResult:
+    poses: List[FriendlyPose]
+    ts: List[float]
 
-
-@dataclass
-class Rectangle:
-    xmin: float
-    ymin: float
-    xmax: float
-    ymax: float
-
-Primitive = Union[Circle, Rectangle]
+def simulate(start: FriendlyPose, steps: List[PlanStep]) -> SimulationResult:
+    """ Applies the plan to an initial pose to obtain a sequence of time/poses. """
 ```
 
-So, we represents shapes as the union of rototranslated `Rectangle`s and `Circle`s.
 
 
-The collision checker receives first a message `MapDefinition`, and then a sequence of `CollisionCheckQuery`s. The query contains a pose for the robot. The `CollisionCheckResult` contains only a boolean: true means that it is in collision, false means that it is not in collision.
 
 
-## Template
 
-In `collision_checker/collision_checker.py` you will find the template for the collision checker.
+
+Both `environment` and `body` are lists of `PlacedPrimitive`s.
+
+A `PlacedPrimitive` is a pair of a `FriendlyPose` and a `Primitive`.
+ 
+
+
+
+
 
 ## Visualization
 
@@ -142,7 +285,7 @@ The colors mean the following:
 - Red is a pose in which the robot collides and you guessed RIGHT.
 - Pink is a pose in which the robot collides and you guessed WRONG.
 
-## Tips for implementing the collision checker
+## Tips for implementing the planner
 
 There are multiple ways to implement the collision checker. Here are some tips, but feel free to follow your intuition.
 
