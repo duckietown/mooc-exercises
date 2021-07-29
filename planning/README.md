@@ -53,11 +53,11 @@ The combinations give rise to 6 challenges, summarized in the following table.
 (Except for the first two, there are also corresponding `-test` challenges with hidden traces that are used for grading.)
 
 
-<img src="dd-empty.gif"/>
+<img src="_media/dd-empty.gif"/>
 
-<img src="dd-static.gif"/>
+<img src="_media/dd-static.gif"/>
 
-<img src="dd-dynamic.gif"/>
+<img src="_media/dd-dynamic.gif"/>
 
 ## Instructions
 
@@ -255,7 +255,7 @@ def simulate(start: FriendlyPose, steps: List[PlanStep]) -> SimulationResult:
 
 The challenges output will be a video like the following.
 
-<img src="dynamic.gif"/>
+<img src="_media/dynamic.gif"/>
 
 On the left, you will see the start and target pose, and the animation of the result of your plan.
 
