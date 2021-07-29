@@ -52,10 +52,15 @@ The combinations give rise to 6 challenges, summarized in the following table.
 
 (Except for the first two, there are also corresponding `-test` challenges with hidden traces that are used for grading.)
 
+### No obstacles
 
 <img src="_media/dd-empty.gif"/>
 
+### Static obstacles
+
 <img src="_media/dd-static.gif"/>
+
+### Dynamic obstacles
 
 <img src="_media/dd-dynamic.gif"/>
 
