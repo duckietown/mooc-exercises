@@ -53,6 +53,12 @@ The combinations give rise to 6 challenges, summarized in the following table.
 (Except for the first two, there are also corresponding `-test` challenges with hidden traces that are used for grading.)
 
 
+<img src="dd-empty.gif"/>
+
+<img src="dd-static.gif"/>
+
+<img src="dd-dynamic.gif"/>
+
 ## Instructions
 
 The template contained in the `planner` subfolder is a fully functional (but wrong) solution.
