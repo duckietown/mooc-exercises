@@ -43,12 +43,12 @@ The combinations give rise to 6 challenges, summarized in the following table.
 | [mooc-planning-dd-dynamic-vali][mooc-planning-dd-dynamic-vali] | differential drive      | dynamic obstacles  | Planning 1,2   |
 | [mooc-planning-cc-dynamic-vali][mooc-planning-cc-dynamic-vali] | + curvature constraints | dynamic obstacles  | Planning 1,2,3 |
 
-[mooc-planning-dd-empty-vali]:
-[mooc-planning-cc-empty-vali]:
-[mooc-planning-dd-static-vali]:
-[mooc-planning-cc-static-vali]:
-[mooc-planning-dd-dynamic-vali]:
-[mooc-planning-cc-dynamic-vali]:
+[mooc-planning-dd-empty-vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-planning-dd-empty-vali
+[mooc-planning-cc-empty-vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-planning-cc-empty-vali
+[mooc-planning-dd-static-vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-planning-dd-static-vali
+[mooc-planning-cc-static-vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-planning-cc-static-vali
+[mooc-planning-dd-dynamic-vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-planning-dd-dynamic-vali
+[mooc-planning-cc-dynamic-vali]: https://challenges.duckietown.org/v4/humans/challenges/mooc-planning-cc-dynamic-vali
 
 (Except for the first two, there are also corresponding `-test` challenges with hidden traces that are used for grading.)
 
@@ -229,13 +229,12 @@ class Motion:
 ```
 
 (Note here that we are doing motion planning in dynamic environments with *known* motion. 
-Studying reactive cases in which agents react to )
+Studying reactive cases in which agents react to us involves *game theory* and will be part of a second MOOC.)
 
 
-In the `dt_protocols` module you will find a useful function `simulate` which you can use to predict the trajectories for the obstacles (and for yourself as well):
+In the `dt_protocols` module you will find a useful function called `simulate` which you can use to predict the trajectories for the obstacles (and for yourself as well):
 
 ```python
-
 @dataclass
 class SimulationResult:
     poses: List[FriendlyPose]
@@ -246,148 +245,90 @@ def simulate(start: FriendlyPose, steps: List[PlanStep]) -> SimulationResult:
 ```
 
 
-
-
-
-
-
-Both `environment` and `body` are lists of `PlacedPrimitive`s.
-
-A `PlacedPrimitive` is a pair of a `FriendlyPose` and a `Primitive`.
- 
-
-
-
-
-
 ## Visualization
 
-The challenges output will be a series of images.
+The challenges output will be a video like the following.
 
-In the `queries` folder you will see the queries with the ground truth,
-as the image shows.
+<img src="dynamic.gif"/>
 
-![query](sample/queries/env18.png)
+On the left, you will see the start and target pose, and the animation of the result of your plan.
 
-Colors:
+On the right, you will see plots for:
 
-- Blue is a pose in which the robot does not collide.
-- Red is a pose in which the robot collides.
+* linear velocity
+* angular velocity
+* path curvature (+inf when you turn in place)
+* distance from obstacles 
 
-In the `results` folder you will see your results and the errors you made:
+The red bars identify points in which a constraint was violated. In this case, the robot violates the constraint of not colliding with obstacles. 
 
-![result](sample/results/env18-result.png)
+## Challenge scoring criteria
 
-The colors mean the following:
+There are 5 scoring criteria, from most to least important:
 
-- Blue is a pose in which the robot does not collide and you guessed RIGHT.
-- Orange is a pose in which the robot does not collide and you guessed WRONG.
-- Red is a pose in which the robot collides and you guessed RIGHT.
-- Pink is a pose in which the robot collides and you guessed WRONG.
-
-## Tips for implementing the planner
-
-There are multiple ways to implement the collision checker. Here are some tips, but feel free to follow your intuition.
-
-### Use decomposition
-
-The first thing to note is that the problem can be *decomposed*.
-
-You are asked to see whether the robot collides with the environment at a certain pose.
-Both robot and environment are lists of `Primitive`s. In pseudocode:
-
-    robot =  rp1 ∪ rp2 ∪ ... 
-    Wcoll =  wc1 ∪ wc2 ∪ ...
-
-What you have to check is whether the intersection
-
-    robot ∩ Wcoll 
-
-is empty. Expanding:
-
-    (rp1 ∪ rp2 ∪ ... ) ∩ (wc1 ∪ wc2 ∪ ...)
-
-Now, the intersection of unions is a union of intersection:
-
-    [rp1 ∩ (wc1 ∪ wc2 ∪ ...)]  ∪  [rp2 ∩ (wc1 ∪ wc2 ∪ ...)] ∪ ...
-
-The above shows that you have to check whether any primitive of the robot collides with environment.
-
-Further expanding the first term we obtain:
-
-    [rp1 ∩ (wc1 ∪ wc2 ∪ ...)] = (rp1 ∩ wc1) ∪ (rp2 ∩ wc1) ∪ ...
-
-which shows that in the end, you can reduce the problem to checking pairwise intersection of primitives.
-
-### Pay attention to the poses
-
-Both robot and environment are lists of **rototranslated** primitives.
-
-That is, we should rewrite the robot expression as:
-
-    robot = RT(pose1, primitive1) ∪ RT(pose2, primitive1) ∪ ...
-
-where `RT()` rototranslates a primitive by a pose.
-
-Also note that for each query the robot changes pose. Let's call this pose `Q`.
-
-Note that we have
-
-    robot at pose Q = RT(Q * pose1, primitive1) ∪ RT(Q * pose2, primitive1) ∪ ... 
-
-where `Q * pose` represent matrix multiplication.
-
-The above says that you can "push inside" the global pose.
-
-
-### In the end, what is the core complexity?
-
-Following the above tips, you should be able to get to the point where you are left with checking the collision of two rototranslated primitives.
-
-Note that without loss of generality you can get to the point where you have one primitive at the origin. (You put one primitive in the coordinate frame of the other.)
-
-Now notice that there are 3 cases:
-
-- `Rectangle` vs `Circle`
-- `Rectangle` vs `Rectangle`
-- `Circle` vs `Circle`
-
-`Circle` vs `Circle` is easy: two circles intersects if the distance of the centers is less than the sum of the radii.
-
-For the others, you have to think about it...
-
+1. `mistakes`: The fraction of queries for which you declared a feasible plan, but the plan was not feasible. Very bad!
+   If you don't have a feasible plan, don't pretend that you have one. Lower is better.
+2. `success_ratio`: The fraction of queries for which you provided a feasible plan. Higher is better.
+3. `duration`: the average length of the trajectory. Lower is better.
+4. `complexity`: the average number of steps in your plan. The fewer steps, the better.
+5. `avg_min_distance`: The average distance from the obstacles. Higher is better: we prefer plans with more clearance.
  
-
-### Speeding things up using lower/upper bound heuristics
-
-If you want to speed things up, consider the following method, which allows to introduce a fast heuristic phase using only circle-to-circle comparisons.
-
-For each rectangle `R`, you can find `C1`, the largest circle that is contained in the rectangle, and `C2`, the smallest circle that contains the rectangle. These are an upper bound and a lower bound to the shape.
-
-    C1 ⊆ R ⊆ C2
-
-Now notice that:
-
-- if `C1` collides with a shape, also `R` does.  (but if it doesn't you cannot conclude anything)
-- if `C2` does not collide with a shape, `R` does not as well. (but if it does, you cannot conclude anything)
-
-Using this logic, you can implement a method that first checks quickly whether the circle approximations give already enough information to conclude collision/no-collision. Only if the first test is inconclusive you go to the more expensive component.
-
-### Speeding things up using bitmaps heuristics
-
-Another approach is using bitmaps to convert the environment to an image, where a black pixel means "occupied", and a white pixel means "free". 
-
-Then you can do the same with the robot shape and obtain another bitmap.
-
-Then you check whether the two bitmaps intersect
-
-Advantages:
-
-- reduces the problem of collision to drawing of shapes;
-- cheaper if shapes are very complex.
-
-Disadvantages:
-
-- There are subtle issues regarding the approximations you are making. What exactly does a pixel represent? is it a point, or is it an area? is this an optimistic or pessimistic approximation? The semantics of painting is unclear. 
+## Tips for implementing the planners
 
 
+### Start with the empty obstacles challenge
+
+Start with the challenges with the empty environment. You should be able to compute a plan that moves from pose A to pose B.
+
+One easy way to do it is the following:
+
+1. Starting a pose A, turn towards pose B.
+2. Go forward until you reach B in x,y coordinates.
+3. Adjust the orientation to B's orientation.
+
+This simple algorithm will work, but it produces path with infinite curvature.
+
+You might want to implement a function of this signature:
+
+```python
+def connect_poses(ps: PlanningSetup, a: FriendlyPose, b: FriendlyPose) -> List[PlanStep]]:
+    ...
+```
+
+(Also note that, without loss of generality, you can assume that `a` is the identity, by translating `b` in the frame of `a`.)
+
+### Continue with the static obstacles case
+
+To solve the static obstacles case, you can apply a graph-search algorithm.
+
+You should create a cube of states: the generic node has coordinates (x,y,theta). The coordinates  x, y are distributed in a grid in the `bounds` given by the `PlanningSetup` message. The thetas are distributed in [0, 360], but note that 0 and 360 are the same point! You likely want to have `thetas = [0, 10, 20, ..., 340, 350]`, and make sure that 0 and 350 are neighbors.
+
+The resolution that you need depends on the `tolerance` parameters.
+
+For creating the graph it is convenient to use the `networkx` library.
+
+You should connect two nodes with an edge if `connect_poses` can find a plan to connect them. And you might want to store this plan so that you don't need to recompute it later. Also, store the total duration as the weight for the edge.
+
+`networkx` has already a Dijkstra implementation. You will realize that the actual graph search is super fast compared to the other operations, so it's not worth to implement A* (though it is a nice exercise).
+
+
+### Try the dynamic case
+
+The dynamic case is conceptually the same. 
+
+You should use spatio-temporal nodes. Each node has coordinates `(x,y,theta,t)`.
+
+You can only connect two nodes `(...,t1)` and `(...,t2)` if `t2 > t1`.
+
+The connection function to write now has the form
+
+```python
+def connect_temporal_poses(ps: PlanningSetup, a: FriendlyPose, b: FriendlyPose, dt: float) -> List[PlanStep]]:
+    ...
+```
+
+### Finally, the bounded curvature case
+
+You can try to hack this case using the grid search approach.
+
+However, a better approach is to wait for the "Planning 3" module, where we discuss about *steering functions* and *sampling-based methods*. 
