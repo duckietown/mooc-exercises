@@ -91,7 +91,7 @@ class ObjectDetectionNode(DTROS):
 
         # Decode from compressed image with OpenCV
         try:
-            image = self.bridge.compressed_imgmsg_to_cv2(image_msg)
+            image = self.bridge.compressed_imgmsg_to_cv2(image_msg, desired_encoding="rgb8")
         except ValueError as e:
             self.logerr('Could not decode image: %s' % e)
             return
@@ -122,7 +122,7 @@ class ObjectDetectionNode(DTROS):
                 image = cv2.rectangle(image, pt1, pt2, color, 2)
                 text_location = (pt1[0], min(416, pt1[1]+20))
                 image = cv2.putText(image, name, text_location, font, 1, color, thickness=3)
-            obj_det_img = self.bridge.cv2_to_imgmsg(image, encoding="bgr8")
+            obj_det_img = self.bridge.cv2_to_imgmsg(image, encoding="rgb8")
             self.pub_detections_image.publish(obj_det_img)
 
 
