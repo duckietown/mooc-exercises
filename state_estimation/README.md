@@ -2,13 +2,12 @@
 
 Follow these instructions to run these activities. At the end will be instructions to submit the exercise.
 
-The final exercise counts towards grading and must be submitted for evaluation if you are pursuing the MOOC verified track.
 
 ## Phase 0: System update
 
 - 💻 Always make sure your Duckietown Shell is updated to the latest version. See [installation instructions](https://github.com/duckietown/duckietown-shell)
 
--    If you are working on a fork of this repository, make sure to pull from the upstream remote
+- 💻 If you are working on a fork of this repository, make sure to pull from the upstream remote
 
 - 💻 Update the shell commands: `dts update`
 
