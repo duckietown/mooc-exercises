@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=State Estimation
+Comment=MOOC - State Estimation - Exercise
+Exec=/usr/bin/launch-state-est.sh
+Icon=/root/.icons/state-estimation-exercise.png
+Terminal=true
+X-KeepTerminal=false
+StartupNotify=true

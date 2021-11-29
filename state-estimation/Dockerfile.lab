@@ -8,9 +8,8 @@ RUN pip3 install -U \
     aido-protocols-daffy \
     duckietown-world-daffy \
     tqdm \
-    ipywidgets
-
-
+    ipywidgets \
+    pandas
 
 RUN apt update && apt install unzip
 
