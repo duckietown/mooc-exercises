@@ -15,7 +15,7 @@ Note: This is a code-only exercise: you don't need the Duckiebot.
   + [In the end, what is the core complexity?](#in-the-end-what-is-the-core-complexity)
   + [Speeding things up using lower/upper bound heuristics](#speeding-things-up-using-lowerupper-bound-heuristics)
   + [Speeding things up using bitmaps heuristics](#speeding-things-up-using-bitmaps-heuristics)
-* [Submtting](#submitting)
+* [Submitting](#submitting)
 
 
 ## Instructions
