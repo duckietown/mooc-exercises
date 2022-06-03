@@ -7,12 +7,13 @@ Note: This is a code-only exercise: you don't need the Duckiebot.
 
 
 * [Instructions](#instructions)
-* [Data structures and protocol](#data-structures-and-protocol)
+* [Data structures](#data-structures)
+* [CollisionChecker protocol](#collisionchecker-protocol)
 * [Tips for implementing the collision checker](#tips-for-implementing-the-collision-checker)
   + [Use decomposition](#use-decomposition)
   + [Pay attention to the poses](#pay-attention-to-the-poses)
-  + [In the end, what is the core complexity?](#in-the-end--what-is-the-core-complexity-)
-  + [Speeding things up using lower/upper bound heuristics](#speeding-things-up-using-lower-upper-bound-heuristics)
+  + [In the end, what is the core complexity?](#in-the-end-what-is-the-core-complexity)
+  + [Speeding things up using lower/upper bound heuristics](#speeding-things-up-using-lowerupper-bound-heuristics)
   + [Speeding things up using bitmaps heuristics](#speeding-things-up-using-bitmaps-heuristics)
 * [Submtting](#submitting)
 
@@ -33,7 +34,7 @@ To evaluate the submission,  go in `collision_checker` and use:
 
 Note: Sometimes this command will take longer than you expect.
 
-The command line will specify where the evaluation output is saved. The challenges output will 
+The command line output will specify where the evaluation output is saved. The challenges output will 
 be a series of images. In the `queries` folder you will see the queries with the ground truth, where
 each query is a robot position. Each image shows all the queries for each environment.
 
@@ -77,7 +78,7 @@ In particular, you can see in [`collision_protocol.py`][file] the data structure
 The parameters for the collision checker is a `MapDefinition`, which specifies the `environment` and `body`. 
 The `environment` is all of the shapes that the robot can collide with, and the `body` is all of the shapes that
 make up the robot's body. Therefore, both `environment` and `body` are lists of `PlacedPrimitive`s. However, in
-the validation tests, the robot will only be made up of one `PlacedPrimitive`.
+the validation tests, the robot list will only contain one `PlacedPrimitive`.
 
 A `PlacedPrimitive` is a pair of a `FriendlyPose` and a `Primitive`, or a pose and a shape. Note that `theta_deg` in
 `FriendlyPose` starts at zero in the positive x-axis direction and ends at 359 degrees, moving in a counter-clockwise 
@@ -139,7 +140,7 @@ up as you see fit.
 The first thing to note is that the problem can be *decomposed*.
 
 You are asked to see whether the robot collides with the environment at a certain pose.
-The robot is a list of `PlacedPrimitive` and the environment is a list of `PlacedPrimitive`s. Remember, 
+The robot is a list of `PlacedPrimitive`s and the environment is a list of `PlacedPrimitive`s. Remember, 
 a `PlacedPrimitive` is the combination of a pose and a primitive, or in other terms, a location and
 a shape. In pseudocode:
 
@@ -204,9 +205,7 @@ Note that without loss of generality you can get to the point where you have one
 
 `Circle` vs `Circle` is easy: two circles intersects if the distance of the centers is less than the sum of the radii. (The validation tests don't actually ever use a circle shape on a robot, so this case may seem unncessary, but it's useful to leave it in for learning purposes).
 
-For the others, you have to think about it... Use your robotic mind to engineer a solution! It needs to be correct 95% of the
-time in order to pass the submission below, but the goal is to have 100% accuracy. This will lead to your planning algorithm in
-the next exercise having better performance, and you might be able to get high up on the [leaderboards](https://challenges.duckietown.org/v4/humans/challenges/mooc-collision-check-test/leaderboard)!
+For the others, you have to think about it... Use your robotic mind to engineer a solution!
 
 ### Speeding things up using lower/upper bound heuristics
 
@@ -253,7 +252,7 @@ Note that the submission will be sent to two different challenges:
 - [`mooc-collision-check-vali`][vali] is the **validation** challenge. You will be able to see the score and other output.
 - [`mooc-collision-check-test`][test] is the **testing** challenge. You will not be able to see the scores.
 
-To pass, you have to get at least 95% of the queries correct on the `mooc-collision-check-test` challenge. (This allows some slack, so that you can experiment with probabilistic algorithms).
+To pass, you have to get at least 95% of the queries correct on the `mooc-collision-check-test` challenge. (This allows some slack, so that you can experiment with probabilistic algorithms). However, the goal is to have 100% accuracy. This will lead to your planning algorithm in the next exercise having better performance, and you might be able to get high up on the [leaderboards](https://challenges.duckietown.org/v4/humans/challenges/mooc-collision-check-test/leaderboard)!
 
 Note that you cannot do
 
