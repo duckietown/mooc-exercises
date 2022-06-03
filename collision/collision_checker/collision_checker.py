@@ -14,7 +14,6 @@ from dt_protocols import (
 
 __all__ = ["CollisionChecker"]
 
-
 class CollisionChecker:
     params: MapDefinition
 
@@ -27,43 +26,50 @@ class CollisionChecker:
 
     def on_received_query(self, context: Context, data: CollisionCheckQuery):
         collided = check_collision(
-            Wcoll=self.params.environment, robot_body=self.params.body, robot_pose=data.pose
+            environment=self.params.environment, robot_body=self.params.body, robot_pose=data.pose
         )
         result = CollisionCheckResult(collided)
         context.write("response", result)
 
 
-def check_collision(
-    Wcoll: List[PlacedPrimitive], robot_body: List[PlacedPrimitive], robot_pose: FriendlyPose
-) -> bool:
+def check_collision(environment: List[PlacedPrimitive], robot_body: List[PlacedPrimitive], 
+        robot_pose: FriendlyPose) -> bool:
     # This is just some code to get you started, but you don't have to follow it exactly
 
-    # start by rototranslating the robot parts by the robot pose
-    rototranslated_robot: List[PlacedPrimitive] = []  #
+    # You can start by rototranslating the robot_body by the robot_pose
+    rototranslated_robot: List[PlacedPrimitive] = []
+    # == WRITE ME ==
 
-    collided = check_collision_list(rototranslated_robot, Wcoll)
+    # Then, call check_collision_list to see if the robot collides with the environment
+    collided = check_collision_list(rototranslated_robot, environment)
 
     # return a random choice
     return random.uniform(0, 1) > 0.5
 
 
-def check_collision_list(A: List[PlacedPrimitive], B: List[PlacedPrimitive]) -> bool:
-    # This is just some code to get you started, but you don't have to follow it exactly
+def check_collision_list(rototranslated_robot: List[PlacedPrimitive], environment: List[PlacedPrimitive]) -> bool:
 
-    for a, b in itertools.product(A, B):
-        if check_collision_shape(a, b):
+    # This is just some code to get you started, but you don't have to follow it exactly
+    for robot, envObject in itertools.product(rototranslated_robot, environment):
+        if check_collision_shape(robot, envObject):
             return True
 
     return False
 
 
 def check_collision_shape(a: PlacedPrimitive, b: PlacedPrimitive) -> bool:
+
     # This is just some code to get you started, but you don't have to follow it exactly
+    if isinstance(a.primitive, Circle) and isinstance(b.primitive, Circle):
+        ...
+        # == WRITE ME ==
+    if isinstance(a.primitive, Rectangle) and isinstance(b.primitive, Circle):
+        ...
+        # == WRITE ME ==
+    if isinstance(a.primitive, Rectangle) and isinstance(b.primitive, Rectangle):
+        ...
+        # == WRITE ME ==
+    ...
 
-    if isinstance(a, Circle) and isinstance(b, Circle):
-        ...
-    if isinstance(a, Circle) and isinstance(b, Rectangle):
-        ...
     # for now let's return a random guess
-
     return ...
