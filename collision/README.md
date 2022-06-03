@@ -61,7 +61,7 @@ To get started writing the collision checker, go read `collision_checker.py`, wh
 There are some hints to get started there. Modify the file and check its performance with the `evaluate`
 command above. 
 
-For information on the [Data Structures](#data-structures) used or the [CollisionChecker protocol](#collisionchecker-protocol), see the corresponding sections below. For some [tips for implementing the collision checker](#tips-for-implementing-the-collision-checker), go to the corresponding section below.
+For information on the [data structures](#data-structures) used or the [CollisionChecker protocol](#collisionchecker-protocol), see the corresponding sections below. For some [tips for implementing the collision checker](#tips-for-implementing-the-collision-checker), go to the corresponding section below.
 
 Once you are satisfied with the program, [submit](#submitting) to the challenge with the section below.
 
