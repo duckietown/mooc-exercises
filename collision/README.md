@@ -174,7 +174,7 @@ the environment?" to asking "Does this part of the robot collide with this envir
 this second question multiple times for each query. If the answer to this second question is ever yes, then 
 we know that the robot collides with the environment.
 
-This tip has already be partially implemented in `collision_checker.py`.
+This tip has already been partially implemented in `collision_checker.py`.
 
 ### Pay attention to the poses
 
