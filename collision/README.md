@@ -105,6 +105,8 @@ by a `radius`, while a Rectangle is defined by four values:
  - `ymax` is the distance from the center point to its side in the positive y direction (if theta_deg in `FriendlyPose` is zero, this side is on the top of the pose point).
  - `ymin` is the same, but in the negative y direction
 
+xmax, xmin, ymax, and ymin are all given with respect to the robot/obstacle's coordinate system, and not the world coordinate system. Therefore, the theta_deg value of the `FriendlyPose` affects the rotation of the Rectangle.
+
 ```python
 
 @dataclass
@@ -126,9 +128,9 @@ So, we represents shapes as the union of rototranslated `Rectangle`s and `Circle
 
 ## CollisionChecker Protocol
 
-The class `CollisionChecker` in `collision_checker.py` first receives a message `MapDefinition` to define the environment and robot shape. Then, it recieves a sequence of `CollisionCheckQuery`s. The query contains a pose for the robot.
+The class `CollisionChecker` in `collision_checker.py` first receives a message `MapDefinition` to define the environment and robot shape. It also contains a default pose for the robot (0, 0). Then, it recieves a sequence of `CollisionCheckQuery`s. The query contains a new pose for the robot.
 
-The code you will write should take the pose in the `CollisionCheckQuery`, combine it with the robot shape from the `MapDefinition`, and then see if it collides with any part of the environment. The result of this will go into a `CollisionCheckResult`. The `CollisionCheckResult` contains only a boolean: true means that it is in collision, false means that it is not in collision.
+Therefore, the `CollisionChecker` must take the new pose from the `CollisionCheckQuery`, combine it with the default pose already contained the the robot's `PlacedPrimitive`s, and then see if it collides with any part of the environment. The result of this will go into a `CollisionCheckResult`. The `CollisionCheckResult` contains only a boolean: true means that it is in collision, false means that it is not in collision.
 
 ## Tips for implementing the collision checker
 
@@ -147,7 +149,7 @@ a shape. In pseudocode:
     robot =  rp1 ∪ rp2 ∪ rp3 ∪ ...
     environment =  obj1 ∪ obj2 ∪ obj3 ∪ ...
 
-(Note: In the validation tests, the robot is only ever composed of one shape. But it's good to program this
+(Note: In the validation tests, the robot is only ever composed of one `PlacedPrimitive`, or shape. But it's good to program this
 to work with multiple shapes so you could work with more complex robot designs.)
 
 What you have to check is whether the intersection
