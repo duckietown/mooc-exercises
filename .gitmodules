@@ -1,0 +1,4 @@
+[submodule "project/solution/src/dt-core"]
+	path = project/solution/src/dt-core
+	url = https://github.com/duckietown/dt-core.git
+	branch = daffy-project
