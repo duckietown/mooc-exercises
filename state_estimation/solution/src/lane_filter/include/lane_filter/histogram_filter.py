@@ -12,7 +12,6 @@ from scipy.ndimage.filters import gaussian_filter
 from scipy.stats import entropy, multivariate_normal
 from math import floor, sqrt
 
-
 # In[ ]:
 
 
@@ -25,7 +24,6 @@ def histogram_prior(belief, grid_spec, mean_0, cov_0):
     RV = multivariate_normal(mean_0, cov_0)
     belief = RV.pdf(pos)
     return belief
-
 
 # In[ ]:
 
@@ -98,7 +96,6 @@ def prepare_segments(segments):
         filtered_segments.append(segment)
     return filtered_segments
 
-
 # In[ ]:
 
 
@@ -138,7 +135,6 @@ def generate_vote(segment, road_spec):
         d_i = road_spec['lanewidth'] / 2 - d_i
 
     return d_i, phi_i
-
 
 # In[ ]:
 
