@@ -53,7 +53,7 @@ You can similarly run your agent on your Duckiebot (if you have a Jetson Nano) u
 
     💻$ `dts exercises test -b ![DUCKIEBOT_NAME]`
 
-You can repeat the procedure above for viewing the detections overlayed on your camera image.
+You can repeat the procedure above for viewing the detections overlaid on your camera image.
 
 
 ## Phase 3: Submit the homework
