@@ -1,6 +1,6 @@
 # Exercise configuration file
 
-agent_base: "template_ros"
+agent_base: "duckietown_baseline"
 ws_dir: "solution" # directory that contains the code the user needs to see
 log_dir: "logs" # directory that we should mount to put logs in
 lab_dir: .         # directory to be mounted into the jupyter container
