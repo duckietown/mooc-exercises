@@ -49,14 +49,14 @@ gauge the performance of your model. In noVNC, click on the `rqt_image_view` ico
 `agent/lane_filter_node/belief_img`. This image is a matrix representation of the belief histogram.
 
 To make the robot move, you will have to put it into `LANE_FOLLOWING` mode. You can do this by opening the joystick
-and clicking `a` (for autonomous). Hitting `s` with the joytsick window active will return you to 
+and clicking `a` (for autonomous). Hitting `s` with the joystick window active will return you to 
 `NORMAL_JOYSTICK_CONTROL` mode.
 
 You can similarly run your agent on your Duckiebot using:
 
     💻$ `dts exercises test -b ![DUCKIEBOT_NAME]`
 
-You can repeat the procedure above for viewing the detections overlayed on your camera image.
+You can repeat the procedure above for viewing the detections overlaid on your camera image.
 
 
 ## Phase 3: Submit the homework
@@ -74,4 +74,4 @@ Then finally submit with
 
 Your submitted agent should be able to navigate an entire loop in Duckietown. 
 
-You can verify the scores of your sumbissions on the [mooc-state-estimation challenge leaderboard](https://challenges.duckietown.org/v4/humans/challenges/mooc-state-estimation/leaderboard) after your submission is evaluated.
+You can verify the scores of your submissions on the [mooc-state-estimation challenge leaderboard](https://challenges.duckietown.org/v4/humans/challenges/mooc-state-estimation/leaderboard) after your submission is evaluated.
