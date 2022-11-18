@@ -9,8 +9,7 @@ Note: This is a code-only exercise: you don't need the Duckiebot.
 
 ## Instructions
 
-The template contained in this folder is a fully functional (wrong) solution. 
-You can try to evaluate/submit right away.
+The template contained in this folder is a fully functional (wrong) solution. Currently, the solution submits random guesses as to whether the robot collides with the environment or not. You can try to evaluate right away to see how it works.
 
 Make sure you have an updated system using
 
