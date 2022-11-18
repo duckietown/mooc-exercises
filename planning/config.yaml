@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c98b23649c18234c24245c91a4753be9b065e86d8553ffbe06dd0264a165cb53
-size 58
+# Exercise configuration file
+ws_dir: solution
+lab_dir: .
