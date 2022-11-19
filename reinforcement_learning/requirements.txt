@@ -1,0 +1,3 @@
+gym
+torch
+pygame>=2.0.0
