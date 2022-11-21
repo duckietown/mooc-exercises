@@ -132,10 +132,10 @@ class LaneFilterNode(DTROS):
 
         """
         # update
-        self.filter.update(segment_list_msg.segments.header.stamp)
+        self.filter.update(segment_list_msg.segments)
 
         # publish
-        self.publishEstimate(segment_list_msg.segments.header.stamp)
+        self.publishEstimate(segment_list_msg.header.stamp)
 
     def publishEstimate(self, stamp):
 
