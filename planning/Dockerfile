@@ -14,7 +14,8 @@ RUN cat requirements.* > .requirements.txt
 RUN python3 -m pip install -r .requirements.txt
 
 
-COPY . .
+COPY solution .
+
 
 # check that the configuration is ok (symbols exist)
 RUN node-launch --config node_launch.yaml --check
