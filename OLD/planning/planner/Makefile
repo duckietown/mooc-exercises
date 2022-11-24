@@ -7,4 +7,4 @@ submit:
 
 
 submit-bea:
-	dts challenges submit --impersonate 1639  --retire-same-label --no-cache
+	dts challenges submit --impersonate 1639 --challenge all --retire-same-label
