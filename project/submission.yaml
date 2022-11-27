@@ -1,4 +1,4 @@
-challenge: [mooc-ros-template]
+challenge: [lx22-state-estimation]
 
 protocol: aido2_db18_agent-z2
 user-label: "ROS template"
