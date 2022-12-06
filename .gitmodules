@@ -2,3 +2,7 @@
 	path = project/solution/src/dt-core
 	url = https://github.com/duckietown/dt-core.git
 	branch = daffy-project
+[submodule "project/solution/src/dt-car-interface"]
+	path = project/solution/src/dt-car-interface
+	url = https://github.com/duckietown/dt-car-interface.git
+	branch = daffy-project
