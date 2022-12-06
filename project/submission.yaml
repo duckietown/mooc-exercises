@@ -1,4 +1,4 @@
-challenge: [lx22-state-estimation]
+challenge: [aido-LFVI-sim-validation]
 
 protocol: aido2_db18_agent-z2
 user-label: "ROS template"

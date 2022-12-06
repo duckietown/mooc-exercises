@@ -6,7 +6,7 @@ log_dir: "logs" # directory that we should mount to put logs in
 lab_dir: .         # directory to be mounted into the jupyter container
 agent_run_cmd: "run.sh" # the script in "launchers" to run the agent with
 ros: true
-challenge: lx22-state-estimation
+challenge: aido-LFVI-sim-validation
 rsync_exclude:
   - "solution/duckietown_dataset"
   - "solution/logs"
