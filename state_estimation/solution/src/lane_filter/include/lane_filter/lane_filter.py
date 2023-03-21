@@ -110,12 +110,11 @@ class LaneFilterHistogram:
         self.belief = histogram_prior(self.belief, self.grid_spec, self.mean_0, self.cov_0)
         self.initialized = True
 
-    def predict(self, dt, left_encoder_delta_ticks, right_encoder_delta_ticks):
+    def predict(self, left_encoder_delta_ticks, right_encoder_delta_ticks):
         if not self.initialized:
             return
         self.belief = histogram_predict(
             self.belief,
-            dt,
             left_encoder_delta_ticks,
             right_encoder_delta_ticks,
             self.grid_spec,

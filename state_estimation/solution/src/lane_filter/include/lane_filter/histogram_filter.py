@@ -17,7 +17,7 @@ from math import floor, sqrt
 
 
 # Now let's define the prior function. In this case we choose
-# to initialize the historgram based on a Gaussian distribution
+# to initialize the historgram based on a Gaussian distribution around [0,0]
 def histogram_prior(belief, grid_spec, mean_0, cov_0):
     pos = np.empty(belief.shape + (2,))
     pos[:, :, 0] = grid_spec["d"]
@@ -37,7 +37,7 @@ def histogram_predict(belief, dt, left_encoder_ticks, right_encoder_ticks, grid_
         belief_in = belief
         delta_t = dt
         
-        # TODO calculate v and w from ticks using kinematics. You will need `robot_spec`
+        # TODO calculate v and w from ticks using kinematics. You will need  some parameters in the `robot_spec` defined above
         v = 0.0 # replace this with a function that uses the encoder 
         w = 0.0 # replace this with a function that uses the encoder
         
@@ -100,7 +100,6 @@ def prepare_segments(segments):
 
 
 # In[ ]:
-
 
 
 def generate_vote(segment, road_spec):
